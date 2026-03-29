@@ -1,13 +1,23 @@
 {
   "name": "tmpclaw",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "private": true,
   "scripts": {
-    "build": "echo \"No build configured\" && exit 0",
-    "start": "echo \"No start configured\" && exit 0",
-    "dev": "echo \"No dev configured\" && exit 0"
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "dev": "tsx watch src/index.ts"
   },
   "engines": {
     "node": ">=18"
+  },
+  "dependencies": {
+    "express": "^5.2.1",
+    "pino": "^10.3.1"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.6",
+    "@types/node": "^25.5.0",
+    "tsx": "^4.21.0",
+    "typescript": "^6.0.2"
   }
 }

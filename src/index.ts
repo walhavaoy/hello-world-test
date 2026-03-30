@@ -1,4 +1,5 @@
 import express from "express";
+import path from "path";
 import pino from "pino";
 
 const logger = pino({ name: "tmpclaw" });
@@ -6,6 +7,8 @@ const logger = pino({ name: "tmpclaw" });
 const app = express();
 
 const port = parseInt(process.env.PORT ?? "3000", 10);
+
+app.use(express.static(path.join(__dirname, "..", "public")));
 
 app.get("/healthz", (_req, res) => {
   res.json({ status: "ok" });
@@ -23,82 +26,165 @@ const greetings: string[] = [
 ];
 
 app.get("/", (_req, res) => {
-  const serverTime = new Date().toISOString();
+  const serverTime = new Date().toLocaleTimeString("en-US", {
+    hour: "numeric",
+    minute: "2-digit",
+    second: "2-digit",
+  });
   res.type("html").send(`<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Hello World</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>tmpclaw</title>
   <style>
     :root {
-      --bg: #1a1a2e;
-      --text: #e0e0e0;
-      --accent: #4a90d9;
-      --surface: #16213e;
-      --border: #2a2a4a;
+      --surface: #ffffff;
+      --bg: #f4f5f7;
+      --text: #1a1a1a;
+      --text-dim: #666666;
+      --border: #dddddd;
+      --accent: #0066cc;
+      --success: #22863a;
+      --btn-bg: #0066cc;
+      --btn-text: #ffffff;
+      --btn-hover: #0052a3;
     }
-    * { margin: 0; padding: 0; box-sizing: border-box; }
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
     body {
-      background: var(--bg);
-      color: var(--text);
       font-family: system-ui, -apple-system, sans-serif;
+      color: var(--text);
+      background: var(--bg);
       min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 2rem;
+      padding: 1rem;
+    }
+    .container {
+      max-width: 64rem;
+      margin: 0 auto;
+      padding: 1rem;
+      width: 100%;
+    }
+    h1 {
+      font-size: 2rem;
+      margin-bottom: 0.5rem;
+    }
+    .subtitle {
+      color: var(--text-dim);
+      font-size: 0.875rem;
+      margin-bottom: 1.5rem;
+    }
+    .hero-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 0.5rem;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+    .hero-card h2 {
+      font-size: 1.125rem;
+      margin-bottom: 1rem;
+      color: var(--text);
+    }
+    #time-display {
+      font-size: 1rem;
+      color: var(--text-dim);
+      margin-bottom: 1rem;
+    }
+    button {
+      padding: 0.625rem 1.25rem;
+      font-size: 1rem;
+      cursor: pointer;
+      border: none;
+      border-radius: 0.375rem;
+      background: var(--btn-bg);
+      color: var(--btn-text);
+      font-weight: 500;
+    }
+    button:hover {
+      background: var(--btn-hover);
+    }
+    #greeting-output {
+      margin-top: 1rem;
+      font-size: 1.25rem;
+      min-height: 1.5rem;
+      color: var(--accent);
+      font-weight: 600;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(18rem, 1fr));
+      gap: 1rem;
     }
     .card {
       background: var(--surface);
       border: 1px solid var(--border);
-      border-radius: 0.75rem;
-      padding: 2.5rem;
-      max-width: 32rem;
-      width: 100%;
-      box-shadow: 0 0.25rem 1rem rgba(0, 0, 0, 0.3);
+      border-radius: 0.5rem;
+      padding: 1rem;
+      transition: border-color 0.15s;
     }
-    h1 {
-      font-size: 1.75rem;
-      font-weight: 700;
-      margin-bottom: 0.75rem;
+    .card:hover {
+      border-color: var(--accent);
     }
-    .time {
+    .card-title {
+      font-weight: 600;
+      margin-bottom: 0.5rem;
       color: var(--text);
-      font-size: 0.85rem;
-      margin-bottom: 2rem;
-      padding-bottom: 1rem;
-      border-bottom: 1px solid var(--border);
-      font-variant-numeric: tabular-nums;
-      opacity: 0.65;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
     }
-    button {
-      background: var(--accent);
-      color: #fff;
-      border: none;
-      border-radius: 0.375rem;
-      padding: 0.625rem 1.25rem;
-      cursor: pointer;
-      font-size: 1rem;
-      transition: background 0.15s;
-      width: 100%;
+    .status-dot {
+      width: 0.5rem;
+      height: 0.5rem;
+      border-radius: 50%;
+      background: var(--success);
+      display: inline-block;
     }
-    button:hover { background: #5ba0e9; }
-    .greeting {
-      min-height: 1.5rem;
-      margin-top: 1.25rem;
-      color: var(--accent);
-      font-size: 1.25rem;
-      text-align: center;
+    .card-meta {
+      color: var(--text-dim);
+      font-size: 0.875rem;
+    }
+    @media (max-width: 48rem) {
+      .container { padding: 0.75rem; }
+      .grid { grid-template-columns: 1fr; }
+      h1 { font-size: 1.5rem; }
+      .hero-card { padding: 1rem; }
+    }
+    @media (max-width: 30rem) {
+      .container { padding: 0.5rem; }
+      h1 { font-size: 1.25rem; }
+      button { font-size: 0.875rem; width: 100%; }
     }
   </style>
 </head>
 <body>
-  <div class="card">
-    <h1 data-testid="heading">Hello World</h1>
-    <p class="time" data-testid="time">Server time: ${serverTime}</p>
-    <button data-testid="greeting-btn">Get Greeting</button>
-    <p class="greeting" data-testid="greeting-output"></p>
+  <div class="container">
+    <h1 data-testid="heading">tmpclaw</h1>
+    <div class="subtitle">Kubernetes-native AI agent platform</div>
+    <div class="hero-card">
+      <h2>Interactive Greeting</h2>
+      <div id="time-display" data-testid="time">${serverTime}</div>
+      <button data-testid="greeting-btn">Get Greeting</button>
+      <div id="greeting-output" data-testid="greeting-output"></div>
+    </div>
+    <div class="grid">
+      <div class="card">
+        <div class="card-title"><span class="status-dot"></span>Health Endpoint</div>
+        <div class="card-meta">/healthz &mdash; system health check</div>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="status-dot"></span>Greeting API</div>
+        <div class="card-meta">/api/greeting &mdash; random greeting JSON</div>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="status-dot"></span>Static Assets</div>
+        <div class="card-meta">Served via express.static from /public</div>
+      </div>
+    </div>
   </div>
   <script>
     document.querySelector('[data-testid="greeting-btn"]').addEventListener('click', async function () {

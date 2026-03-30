@@ -32,160 +32,59 @@ app.get("/", (_req, res) => {
     second: "2-digit",
   });
   res.type("html").send(`<!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>tmpclaw</title>
   <style>
     :root {
-      --surface: #ffffff;
-      --bg: #f4f5f7;
-      --text: #1a1a1a;
-      --text-dim: #666666;
-      --border: #dddddd;
-      --accent: #0066cc;
-      --success: #22863a;
-      --btn-bg: #0066cc;
-      --btn-text: #ffffff;
-      --btn-hover: #0052a3;
+      color-scheme: dark;
+      --bg: #1a1614;
+      --surface: #242020;
+      --border: #3d3634;
+      --text: #f0ebe6;
+      --text-dim: #9a8f86;
+      --accent: #c87070;
+      --accent-hover: #d98585;
     }
-    *, *::before, *::after {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     body {
-      font-family: system-ui, -apple-system, sans-serif;
-      color: var(--text);
       background: var(--bg);
-      min-height: 100vh;
-      padding: 1rem;
-    }
-    .container {
-      max-width: 64rem;
-      margin: 0 auto;
-      padding: 1rem;
-      width: 100%;
-    }
-    h1 {
-      font-size: 2rem;
-      margin-bottom: 0.5rem;
-    }
-    .subtitle {
-      color: var(--text-dim);
-      font-size: 0.875rem;
-      margin-bottom: 1.5rem;
-    }
-    .hero-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 0.5rem;
-      padding: 1.5rem;
-      margin-bottom: 1.5rem;
-    }
-    .hero-card h2 {
-      font-size: 1.125rem;
-      margin-bottom: 1rem;
       color: var(--text);
+      font-family: system-ui, -apple-system, sans-serif;
+      line-height: 1.5;
+      max-width: 40rem;
+      margin: 2rem auto;
+      padding: 0 1rem;
     }
-    #time-display {
-      font-size: 1rem;
-      color: var(--text-dim);
-      margin-bottom: 1rem;
-    }
+    ::selection { background: var(--accent); color: var(--bg); }
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { color: var(--accent-hover); }
+    h1 { color: var(--text); margin-bottom: 0.5rem; font-size: 1.75rem; }
+    #time-display { font-size: 1.125rem; margin-bottom: 1.5rem; color: var(--text-dim); }
     button {
-      padding: 0.625rem 1.25rem;
-      font-size: 1rem;
-      cursor: pointer;
+      background: var(--accent);
+      color: var(--bg);
       border: none;
-      border-radius: 0.375rem;
-      background: var(--btn-bg);
-      color: var(--btn-text);
-      font-weight: 500;
-    }
-    button:hover {
-      background: var(--btn-hover);
-    }
-    #greeting-output {
-      margin-top: 1rem;
-      font-size: 1.25rem;
-      min-height: 1.5rem;
-      color: var(--accent);
+      border-radius: 0.25rem;
+      padding: 0.5rem 1rem;
+      cursor: pointer;
+      font-size: 1rem;
       font-weight: 600;
+      transition: background 0.15s;
     }
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(18rem, 1fr));
-      gap: 1rem;
-    }
-    .card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 0.5rem;
-      padding: 1rem;
-      transition: border-color 0.15s;
-    }
-    .card:hover {
-      border-color: var(--accent);
-    }
-    .card-title {
-      font-weight: 600;
-      margin-bottom: 0.5rem;
-      color: var(--text);
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-    .status-dot {
-      width: 0.5rem;
-      height: 0.5rem;
-      border-radius: 50%;
-      background: var(--success);
-      display: inline-block;
-    }
-    .card-meta {
-      color: var(--text-dim);
-      font-size: 0.875rem;
-    }
-    @media (max-width: 48rem) {
-      .container { padding: 0.75rem; }
-      .grid { grid-template-columns: 1fr; }
-      h1 { font-size: 1.5rem; }
-      .hero-card { padding: 1rem; }
-    }
-    @media (max-width: 30rem) {
-      .container { padding: 0.5rem; }
-      h1 { font-size: 1.25rem; }
-      button { font-size: 0.875rem; width: 100%; }
-    }
+    button:hover { background: var(--accent-hover); }
+    #greeting-output { margin-top: 1rem; font-size: 1.25rem; min-height: 1.5rem; }
+
   </style>
 </head>
 <body>
-  <div class="container">
-    <h1 data-testid="heading">tmpclaw</h1>
-    <div class="subtitle">Kubernetes-native AI agent platform</div>
-    <div class="hero-card">
-      <h2>Interactive Greeting</h2>
-      <div id="time-display" data-testid="time">${serverTime}</div>
-      <button data-testid="greeting-btn">Get Greeting</button>
-      <div id="greeting-output" data-testid="greeting-output"></div>
-    </div>
-    <div class="grid">
-      <div class="card">
-        <div class="card-title"><span class="status-dot"></span>Health Endpoint</div>
-        <div class="card-meta">/healthz &mdash; system health check</div>
-      </div>
-      <div class="card">
-        <div class="card-title"><span class="status-dot"></span>Greeting API</div>
-        <div class="card-meta">/api/greeting &mdash; random greeting JSON</div>
-      </div>
-      <div class="card">
-        <div class="card-title"><span class="status-dot"></span>Static Assets</div>
-        <div class="card-meta">Served via express.static from /public</div>
-      </div>
-    </div>
-  </div>
+  <h1 data-testid="heading">tmpclaw</h1>
+  <div data-testid="time" id="time-display">${serverTime}</div>
+  <button data-testid="greeting-btn" data-action="fetch-greeting">Get Greeting</button>
+  <div data-testid="greeting-output" id="greeting-output"></div>
+
   <script>
     document.querySelector('[data-testid="greeting-btn"]').addEventListener('click', async function () {
       var output = document.querySelector('[data-testid="greeting-output"]');

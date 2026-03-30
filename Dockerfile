@@ -16,6 +16,7 @@ ENV NODE_ENV=production
 COPY package*.json ./
 RUN npm ci --omit=dev --ignore-scripts
 COPY --from=build /app/dist/ ./dist/
+COPY public/ ./public/
 ENV PORT=3000
 EXPOSE 3000
 USER node

@@ -1,4 +1,5 @@
 import express from "express";
+import path from "node:path";
 import pino from "pino";
 
 const logger = pino({ name: "tmpclaw" });
@@ -6,6 +7,8 @@ const logger = pino({ name: "tmpclaw" });
 const app = express();
 
 const port = parseInt(process.env.PORT ?? "3000", 10);
+
+app.use(express.static(path.join(__dirname, "..", "public")));
 
 app.get("/healthz", (_req, res) => {
   res.json({ status: "ok" });
